@@ -7,8 +7,19 @@ namespace System.Web
 	/// <summary>
 	/// 
 	/// </summary>
-	public static class WebExtensions
+	public static class HttpResponseExtensions
 	{
+		/// <summary>
+		/// Redirects the specified response.
+		/// </summary>
+		/// <param name="response">The response.</param>
+		/// <param name="responseCode">The response code.</param>
+		/// <param name="url">The URL.</param>
+		public static void Redirect(this HttpResponseBase response, HttpStatusCode responseCode, string url)
+		{
+			Redirect(HttpContext.Current.Response, (int)responseCode, url);
+		}
+
 		/// <summary>
 		/// Redirects the specified response.
 		/// </summary>
@@ -18,6 +29,17 @@ namespace System.Web
 		public static void Redirect(this HttpResponseBase response, int responseCode, string url)
 		{
 			Redirect(HttpContext.Current.Response, responseCode, url);
+		}
+
+		/// <summary>
+		/// Redirects the specified response.
+		/// </summary>
+		/// <param name="response">The response.</param>
+		/// <param name="responseCode">The response code.</param>
+		/// <param name="url">The URL.</param>
+		public static void Redirect(this HttpResponse response, HttpStatusCode responseCode, string url)
+		{
+			Redirect(response, (int)responseCode, url);
 		}
 
 		/// <summary>
@@ -62,12 +84,15 @@ namespace System.Web
 			}
 
 			response.RedirectLocation = url;
-
 			response.ContentType = "text/html";
-			response.Write("<html><head><title>Object Moved</title></head><body>");
-			response.Write("<h2>Object moved to <a href=\"" + HttpUtility.HtmlAttributeEncode(url) + "\">here</a>.</h2>");
-			response.Write("</body></html>");
 
+			response.Write("<html><head><title>");
+			response.Write(response.StatusDescription);
+			response.Write("</title></head><body><p>The URI that you requested has been <a href=\"");
+			response.Write(HttpUtility.HtmlAttributeEncode(url));
+			response.Write("\">moved to here</a>.</p></body></html>");
+
+			response.Flush();
 			response.End();
 		}
 	}

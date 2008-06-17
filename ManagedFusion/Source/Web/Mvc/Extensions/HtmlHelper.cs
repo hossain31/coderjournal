@@ -27,6 +27,18 @@ namespace System.Web.Mvc
 		}
 
 		/// <summary>
+		/// Ifs the specified helper.
+		/// </summary>
+		/// <param name="helper">The helper.</param>
+		/// <param name="condition">if set to <see langword="true"/> [condition].</param>
+		/// <param name="response">The response.</param>
+		/// <returns></returns>
+		public static ManagedFusion.If<string> If(this HtmlHelper helper, bool condition, string response)
+		{
+			return new ManagedFusion.If<string>(condition, response);
+		}
+
+		/// <summary>
 		/// Switches the specified response.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>

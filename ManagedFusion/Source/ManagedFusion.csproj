@@ -12,14 +12,10 @@
     <AssemblyName>ManagedFusion</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SccProjectName>
-    </SccProjectName>
-    <SccLocalPath>
-    </SccLocalPath>
-    <SccAuxPath>
-    </SccAuxPath>
-    <SccProvider>
-    </SccProvider>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,13 +26,25 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'www.beta.ideapipe.com|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\www.beta.ideapipe.com\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'www.ideapipe.com|AnyCPU' ">
+    <OutputPath>bin\www.ideapipe.com\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -45,15 +53,15 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Abstractions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+    <Reference Include="System.Web.Abstractions, Version=0.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Resources\System.Web.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="System.Web.Mvc, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+    <Reference Include="System.Web.Mvc, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Resources\System.Web.Mvc.dll</HintPath>
     </Reference>
-    <Reference Include="System.Web.Routing, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+    <Reference Include="System.Web.Routing, Version=0.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Resources\System.Web.Routing.dll</HintPath>
     </Reference>
@@ -81,27 +89,56 @@
     <Compile Include="Serialization\XmlSerializer.cs" />
     <Compile Include="Switch.cs" />
     <Compile Include="Utility.cs" />
+    <Compile Include="Validation\CompareAttribute.cs" />
+    <Compile Include="Validation\LengthAttribute.cs" />
+    <Compile Include="Validation\RegexAttribute.cs" />
+    <Compile Include="Validation\RequiredAttribute.cs" />
+    <Compile Include="Validation\ValitationAttribute.cs" />
     <Compile Include="Web\Extensions\HttpResponse.cs" />
     <Compile Include="Web\Mvc\AllowedHttpMethodsAttribute.cs" />
+    <Compile Include="Web\Mvc\AuthorizeAttribute.cs" />
     <Compile Include="Web\Mvc\CacheAttribute.cs" />
     <Compile Include="Web\Mvc\CaptchaValidationAttribute.cs" />
+    <Compile Include="Web\Mvc\CodedRedirectResult.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Web\Mvc\CodedRedirectToRouteResult.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Web\Mvc\CompressAttribute.cs" />
-    <Compile Include="Web\Mvc\Controls\BackgroundNoiseLevel.cs" />
+    <Compile Include="Web\Mvc\Controls\BackgroundNoiseLevel.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Web\Mvc\Controls\CaptchaImage.cs" />
-    <Compile Include="Web\Mvc\Controls\FontWarpFactor.cs" />
-    <Compile Include="Web\Mvc\Controls\LineNoiseLevel.cs" />
+    <Compile Include="Web\Mvc\Controls\FontWarpFactor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Web\Mvc\Controls\LineNoiseLevel.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Web\Mvc\ExceptionHandlerAttribute.cs" />
-    <Compile Include="Web\Mvc\Extensions\ControllerContext.cs" />
+    <Compile Include="Web\Mvc\Extensions\Controller.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Web\Mvc\Extensions\HtmlHelper.cs" />
     <Compile Include="Web\Mvc\Handlers\CaptchaImageHandler.cs" />
     <Compile Include="Web\Mvc\HttpPostOnlyAttribute.cs" />
-    <Compile Include="Web\Mvc\JsonSerializer.cs" />
+    <Compile Include="Web\Mvc\JavaScriptResult.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Web\Mvc\JsonResult.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Web\Mvc\LowercaseRoute.cs" />
     <Compile Include="Web\Mvc\ResponseType.cs" />
+    <Compile Include="Web\Mvc\SerializedResult.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Web\Mvc\ServiceAttribute.cs" />
     <Compile Include="Web\Mvc\ServiceOnlyAttribute.cs" />
-    <Compile Include="Web\Mvc\ServiceViewEngine.cs" />
-    <Compile Include="Web\Mvc\XmlSerializer.cs" />
+    <Compile Include="Web\Mvc\XmlResult.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

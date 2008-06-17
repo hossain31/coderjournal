@@ -29,7 +29,7 @@ namespace ManagedFusion.Web.Mvc
 		/// Called when [action executed].
 		/// </summary>
 		/// <param name="filterContext">The filter context.</param>
-		public override void OnActionExecuted(FilterExecutedContext filterContext)
+		public override void OnActionExecuted(ActionExecutedContext filterContext)
 		{
 			if (Duration <= 0) 
 				return;

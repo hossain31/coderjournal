@@ -77,6 +77,31 @@ namespace ManagedFusion
 		}
 
 		/// <summary>
+		/// Cases the specified term.
+		/// </summary>
+		/// <param name="term">The term.</param>
+		/// <param name="response">The response.</param>
+		/// <returns></returns>
+		public Switch<T, R> Case(T term, R response)
+		{
+			return Case(x => object.Equals(x, term), response);
+		}
+
+		/// <summary>
+		/// Cases the specified condition.
+		/// </summary>
+		/// <param name="condition">The condition.</param>
+		/// <param name="response">The response.</param>
+		/// <returns></returns>
+		public Switch<T, R> Case(Func<T, bool> condition, R response)
+		{
+			if (!this.HasValue && condition(this.Object))
+				this.Set(response);
+
+			return this;
+		}
+
+		/// <summary>
 		/// Defaults the specified function.
 		/// </summary>
 		/// <param name="function">The function.</param>
@@ -85,6 +110,19 @@ namespace ManagedFusion
 		{
 			if (!this.HasValue)
 				this.Set(function(this.Object));
+
+			return this.Value;
+		}
+
+		/// <summary>
+		/// Defaults the specified response.
+		/// </summary>
+		/// <param name="response">The response.</param>
+		/// <returns></returns>
+		public R Default(R response)
+		{
+			if (!this.HasValue)
+				this.Set(response);
 
 			return this.Value;
 		}

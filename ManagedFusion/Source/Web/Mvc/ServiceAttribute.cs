@@ -22,8 +22,8 @@ namespace ManagedFusion.Web.Mvc
 		/// <summary>
 		/// Called when [action executing].
 		/// </summary>
-		/// <param name="filterContext">The filter filterContext.</param>
-		public override void OnActionExecuting(FilterExecutingContext filterContext)
+		/// <param name="filterContext">The filter context.</param>
+		public override void OnActionExecuting(ActionExecutingContext filterContext)
 		{
 			string type = filterContext.HttpContext.Request.QueryString["type"];
 			ResponseType responseType = ResponseType.Html;
@@ -34,7 +34,7 @@ namespace ManagedFusion.Web.Mvc
 
 			// if the response type is still the default HTML check the Accept header
 			// if the requestion is an XMLHttpRequest
-			if (responseType == ResponseType.Html 
+			if (responseType == ResponseType.Html
 				&& filterContext.HttpContext.Request.AcceptTypes != null
 				&& String.Equals(filterContext.HttpContext.Request.Headers["x-requested-with"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase))
 			{
@@ -42,13 +42,13 @@ namespace ManagedFusion.Web.Mvc
 				{
 					switch (accept.ToLower())
 					{
-						case "application/json": 
+						case "application/json":
 						case "application/x-json": responseType = ResponseType.Json; break;
 
 						case "application/javascript":
 						case "application/x-javascript":
 						case "text/javascript": responseType = ResponseType.JS; break;
-						
+
 						case "application/xml":
 						case "text/xml": responseType = ResponseType.Xml; break;
 					}
@@ -58,15 +58,51 @@ namespace ManagedFusion.Web.Mvc
 				}
 			}
 
-			// set the view engine to a service if anything other than HTML
-			if (responseType != ResponseType.Html && filterContext.Controller is Controller)
-				((Controller)filterContext.Controller).ViewEngine = new ServiceViewEngine(responseType);
-
 			if (filterContext.RouteData.Values.ContainsKey("responseType"))
 				filterContext.RouteData.Values.Remove("responseType");
 
 			// set the value in the route data so it can be used in the methods
 			filterContext.RouteData.Values.Add("responseType", responseType);
+		}
+
+		/// <summary>
+		/// Called when [action executed].
+		/// </summary>
+		/// <param name="filterContext">The filter context.</param>
+		public override void OnActionExecuted(ActionExecutedContext filterContext)
+		{
+			if (filterContext.Result is ViewResult)
+			{
+				ViewResult result = filterContext.Result as ViewResult;
+
+				switch ((ResponseType)filterContext.RouteData.Values["responseType"])
+				{
+					case ResponseType.Html:
+						goto default;
+
+					case ResponseType.JS:
+						filterContext.Result = new JavaScriptResult {
+							Data = result.ViewData.Model
+						};
+						break;
+
+					case ResponseType.Json:
+						filterContext.Result = new ManagedFusion.Web.Mvc.JsonResult {
+							Data = result.ViewData.Model
+						};
+						break;
+
+					case ResponseType.Xml:
+						filterContext.Result = new XmlResult {
+							Data = result.ViewData.Model
+						};
+						break;
+
+					default:
+						filterContext.Result = result;
+						break;
+				}
+			}
 		}
 	}
 }

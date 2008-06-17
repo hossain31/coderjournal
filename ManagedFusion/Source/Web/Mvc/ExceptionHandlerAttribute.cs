@@ -83,25 +83,25 @@ namespace ManagedFusion.Web.Mvc
 		/// Called when [action executed].
 		/// </summary>
 		/// <param name="filterContext">The filter filterContext.</param>
-		public override void OnActionExecuted(FilterExecutedContext filterContext)
+		public override void OnActionExecuted(ActionExecutedContext filterContext)
 		{
 			Exception exception = filterContext.Exception;
 
 			if (exception == null)
 				return;
-
+			
 			foreach (Type exceptionType in ExceptionTypes)
 			{
 				if (exceptionType.IsAssignableFrom((exception.InnerException ?? exception).GetType()))
 				{
-					filterContext.ExceptionHandled = false;
+					filterContext.ExceptionHandled = true;
 
 					if (Redirect)
 					{
 						if (String.Equals("POST", filterContext.HttpContext.Request.HttpMethod, StringComparison.OrdinalIgnoreCase))
-							filterContext.RedirectToAction(303, Action, Controller);
+							filterContext.Result = filterContext.Controller.RedirectToAction(303, Action, Controller);
 						else
-							filterContext.RedirectToAction(307, Action, Controller);
+							filterContext.Result = filterContext.Controller.RedirectToAction(307, Action, Controller);
 					}
 					else
 					{
@@ -115,6 +115,7 @@ namespace ManagedFusion.Web.Mvc
 						filterContext.HttpContext.Response.Write("<h2>" + ResponseDescription + "</h2>");
 						filterContext.HttpContext.Response.Write("<p>" + (exception.InnerException ?? exception).Message + "</p>");
 						filterContext.HttpContext.Response.Write("</body></html>");
+
 						filterContext.HttpContext.Response.End();
 					}
 				}

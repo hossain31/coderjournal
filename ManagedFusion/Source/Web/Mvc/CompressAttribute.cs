@@ -22,7 +22,7 @@ namespace ManagedFusion.Web.Mvc
 		/// Called when [action executing].
 		/// </summary>
 		/// <param name="filterContext">The filter context.</param>
-		public override void OnActionExecuting(FilterExecutingContext filterContext)
+		public override void OnActionExecuting(ActionExecutingContext filterContext)
 		{
 			HttpRequestBase request = filterContext.HttpContext.Request;
 

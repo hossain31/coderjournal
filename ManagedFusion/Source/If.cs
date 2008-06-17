@@ -21,6 +21,17 @@ namespace ManagedFusion
 		}
 
 		/// <summary>
+		/// Initializes a new instance of the <see cref="If&lt;R&gt;"/> class.
+		/// </summary>
+		/// <param name="condition">if set to <see langword="true"/> [condition].</param>
+		/// <param name="response">The response.</param>
+		public If(bool condition, R response)
+		{
+			if (condition)
+				Set(response);
+		}
+
+		/// <summary>
 		/// Gets or sets a value indicating whether this instance has value.
 		/// </summary>
 		/// <value>
@@ -59,6 +70,20 @@ namespace ManagedFusion
 		}
 
 		/// <summary>
+		/// Elses if.
+		/// </summary>
+		/// <param name="condition">if set to <see langword="true"/> [condition].</param>
+		/// <param name="response">The response.</param>
+		/// <returns></returns>
+		public If<R> ElseIf(bool condition, R response)
+		{
+			if (!this.HasValue && condition)
+				this.Set(response);
+
+			return this;
+		}
+
+		/// <summary>
 		/// Elses the specified function.
 		/// </summary>
 		/// <param name="function">The function.</param>
@@ -67,6 +92,19 @@ namespace ManagedFusion
 		{
 			if (!this.HasValue)
 				this.Set(function());
+
+			return this.Value;
+		}
+
+		/// <summary>
+		/// Elses the specified response.
+		/// </summary>
+		/// <param name="response">The response.</param>
+		/// <returns></returns>
+		public R Else(R response)
+		{
+			if (!this.HasValue)
+				this.Set(response);
 
 			return this.Value;
 		}

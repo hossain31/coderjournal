@@ -10,7 +10,20 @@ namespace System
 	/// </summary>
 	public static class TextExtensions
 	{
-		private static readonly Regex UrlReplacementExpression = new Regex(@"[^0-9a-z \-]*", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant); 
+		private static readonly Regex UrlReplacementExpression = new Regex(@"[^0-9a-z \-]*", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant);
+
+		/// <summary>
+		/// Tries the trim.
+		/// </summary>
+		/// <param name="s">The s.</param>
+		/// <returns></returns>
+		public static string TryTrim(this string s)
+		{
+			if (s == null)
+				return s;
+
+			return s.Trim();
+		}
 
 		/// <summary>
 		/// Toes the hash.

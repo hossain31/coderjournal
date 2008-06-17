@@ -144,7 +144,7 @@ namespace ManagedFusion.Web.Mvc.Controls
 			LineNoise = LineNoiseLevel.Low;
 			TextLength = 5;
 			TextChars = "ACDEFGHJKLNPQRTUVXYZ2346789";
-			CacheTimeOut = 180D;
+			CacheTimeOut = 600D;
 		}
 
 		/// <summary>

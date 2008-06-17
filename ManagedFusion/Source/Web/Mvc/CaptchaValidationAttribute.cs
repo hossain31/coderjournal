@@ -39,11 +39,11 @@ namespace ManagedFusion.Web.Mvc
 		/// Called when [action executed].
 		/// </summary>
 		/// <param name="filterContext">The filter filterContext.</param>
-		public override void  OnActionExecuting(FilterExecutingContext filterContext)
+		public override void OnActionExecuting(ActionExecutingContext filterContext)
 		{
-			// make sure the captcha valid key is not contained in the route data
-			if (filterContext.RouteData.Values.ContainsKey("captchaValid"))
-				filterContext.RouteData.Values.Remove("captchaValid");
+			// make sure no values are getting sent in from the outside
+			if (filterContext.ActionParameters.ContainsKey("captchaValid"))
+				filterContext.ActionParameters["captchaValid"] = null;
 
 			// get the guid from the post back
 			string guid = filterContext.HttpContext.Request.Form["captcha-guid"];
@@ -64,13 +64,10 @@ namespace ManagedFusion.Web.Mvc
 			filterContext.HttpContext.Cache.Remove(guid);
 
 			// validate the captch
-			if (String.IsNullOrEmpty(actualValue) || String.IsNullOrEmpty(expectedValue) || !String.Equals(actualValue, expectedValue, StringComparison.OrdinalIgnoreCase))
-			{
-				filterContext.RouteData.Values.Add("captchaValid", false);
-				return;
-			}
-
-			filterContext.RouteData.Values.Add("captchaValid", true);
+			filterContext.ActionParameters["captchaValid"] =
+				!String.IsNullOrEmpty(actualValue)
+				&& !String.IsNullOrEmpty(expectedValue)
+				&& String.Equals(actualValue, expectedValue, StringComparison.OrdinalIgnoreCase);
 		}
 	}
 }

@@ -54,12 +54,12 @@ namespace ManagedFusion.Web.Mvc
 		/// <returns></returns>
 		public override VirtualPathData GetVirtualPath(RequestContext requestContext, RouteValueDictionary values)
 		{
-			VirtualPathData path = base.GetVirtualPath(requestContext, values);
+			VirtualPathData data = base.GetVirtualPath(requestContext, values);
 
-			if (path != null)
-				path.VirtualPath = path.VirtualPath.ToLowerInvariant();
+			if (data != null)
+				data.VirtualPath = data.VirtualPath.ToLowerInvariant();
 
-			return path;
+			return data;
 		}
 	}
 }

@@ -46,7 +46,7 @@ namespace ManagedFusion.Web.Mvc.Handlers
 			{
 				context.Response.StatusCode = 404;
 				context.Response.StatusDescription = "Not Found";
-				context.ApplicationInstance.CompleteRequest();
+				context.Response.End();
 				return;
 			}
 
@@ -59,7 +59,7 @@ namespace ManagedFusion.Web.Mvc.Handlers
 			context.Response.ContentType = "image/gif";
 			context.Response.StatusCode = 200;
 			context.Response.StatusDescription = "OK";
-			context.ApplicationInstance.CompleteRequest();
+			context.Response.End();
 		}
 
 		#endregion

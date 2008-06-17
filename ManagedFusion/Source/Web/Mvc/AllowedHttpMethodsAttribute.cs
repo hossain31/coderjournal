@@ -41,7 +41,7 @@ namespace ManagedFusion.Web.Mvc
 		/// Called when [action executing].
 		/// </summary>
 		/// <param name="filterContext">The filter filterContext.</param>
-		public override void OnActionExecuting(FilterExecutingContext filterContext)
+		public override void OnActionExecuting(ActionExecutingContext filterContext)
 		{
 			if (!SupportedHttpMethods.Contains(filterContext.HttpContext.Request.HttpMethod.ToUpper()))
 			{
@@ -52,7 +52,7 @@ namespace ManagedFusion.Web.Mvc
 				filterContext.HttpContext.Response.ContentType = "text/html";
 				filterContext.HttpContext.Response.Write("<html><head><title>Method Not Allowed</title></head><h1>Method Not Allowed</h1><p>Only " + String.Join(", ", this.SupportedHttpMethods.ToArray()) + " is allowed.</p></html>");
 				filterContext.HttpContext.Response.Flush();
-				filterContext.HttpContext.ApplicationInstance.CompleteRequest();
+				filterContext.HttpContext.Response.End();
 				filterContext.Cancel = true;
 			}
 		}
