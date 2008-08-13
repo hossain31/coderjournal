@@ -3,23 +3,19 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{85A46CAC-17B7-49BB-B03B-A1FF8DC6424D}</ProjectGuid>
+    <ProjectGuid>{92F1B19A-91D8-4F24-99D8-40042F86855D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ManagedFusion</RootNamespace>
     <AssemblyName>ManagedFusion</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SccProjectName>
-    </SccProjectName>
-    <SccLocalPath>
-    </SccLocalPath>
-    <SccAuxPath>
-    </SccAuxPath>
-    <SccProvider>
-    </SccProvider>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -69,6 +65,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Crc32.cs" />
+    <Compile Include="Extensions\Enumerator.cs" />
     <Compile Include="Extensions\String.cs" />
     <Compile Include="Extensions\TimeSpan.cs" />
     <Compile Include="If.cs" />
@@ -89,9 +87,9 @@
     <Compile Include="Validation\RequiredAttribute.cs" />
     <Compile Include="Validation\ValitationAttribute.cs" />
     <Compile Include="Web\Extensions\HttpResponse.cs" />
+    <Compile Include="Web\HeaderQValue.cs" />
+    <Compile Include="Web\HeaderQValueList.cs" />
     <Compile Include="Web\Mvc\AllowedHttpMethodsAttribute.cs" />
-    <Compile Include="Web\Mvc\AuthorizeAttribute.cs" />
-    <Compile Include="Web\Mvc\CacheAttribute.cs" />
     <Compile Include="Web\Mvc\CaptchaValidationAttribute.cs" />
     <Compile Include="Web\Mvc\CodedRedirectResult.cs">
       <SubType>Code</SubType>
@@ -110,12 +108,13 @@
     <Compile Include="Web\Mvc\Controls\LineNoiseLevel.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Web\Mvc\ExceptionHandlerAttribute.cs" />
+    <Compile Include="Web\Mvc\DefaultAttribute.cs" />
     <Compile Include="Web\Mvc\Extensions\Controller.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Web\Mvc\Extensions\HtmlHelper.cs" />
     <Compile Include="Web\Mvc\Handlers\CaptchaImageHandler.cs" />
+    <Compile Include="Web\Mvc\HttpGetOnlyAttribute.cs" />
     <Compile Include="Web\Mvc\HttpPostOnlyAttribute.cs" />
     <Compile Include="Web\Mvc\JavaScriptResult.cs">
       <SubType>Code</SubType>
@@ -130,6 +129,7 @@
     </Compile>
     <Compile Include="Web\Mvc\ServiceAttribute.cs" />
     <Compile Include="Web\Mvc\ServiceOnlyAttribute.cs" />
+    <Compile Include="Web\Mvc\UseActionParameterDefaultAttribute.cs" />
     <Compile Include="Web\Mvc\XmlResult.cs">
       <SubType>Code</SubType>
     </Compile>

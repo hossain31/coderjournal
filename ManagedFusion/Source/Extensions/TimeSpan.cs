@@ -8,6 +8,16 @@ namespace System
 	public static class DateTimeExtensions
 	{
 		/// <summary>
+		/// Toes the time since string.
+		/// </summary>
+		/// <param name="date">The date.</param>
+		/// <returns></returns>
+		public static string ToTimeSinceString(this DateTime date)
+		{
+			return (DateTime.UtcNow - date).ToLongString();
+		}
+
+		/// <summary>
 		/// Returns time span in a long string format.
 		/// </summary>
 		/// <param name="time">The time.</param>

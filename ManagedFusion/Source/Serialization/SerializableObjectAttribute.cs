@@ -8,7 +8,7 @@ namespace ManagedFusion.Serialization
 	/// <summary>
 	/// 
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = false)]
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Interface, AllowMultiple = false)]
 	public class SerializableObjectAttribute : Attribute
 	{
 		/// <summary>
