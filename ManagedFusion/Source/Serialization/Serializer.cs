@@ -77,15 +77,15 @@ namespace ManagedFusion.Serialization
 			Type type = obj.GetType();
 			bool anonymousType = type.Name.IndexOf("__AnonymousType") >= 0;
 
-			foreach (FieldInfo info in type.GetFields(BindingFlags.Public | BindingFlags.Instance))
+			foreach (FieldInfo info in type.GetFields(BindingFlags.GetField | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
 				if (anonymousType || info.IsDefined(typeof(SerializablePropertyAttribute), true))
 					values.Add(SerializeName(info), SerializeValue(info.GetValue(obj)));
 
-			foreach (PropertyInfo info2 in type.GetProperties(BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance))
+			foreach (PropertyInfo info2 in type.GetProperties(BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
 			{
 				if (anonymousType || info2.IsDefined(typeof(SerializablePropertyAttribute), true))
 				{
-					MethodInfo getMethod = info2.GetGetMethod();
+					MethodInfo getMethod = info2.GetGetMethod(true);
 					if ((getMethod != null) && (getMethod.GetParameters().Length <= 0))
 						values.Add(SerializeName(info2), SerializeValue(getMethod.Invoke(obj, null)));
 				}

@@ -45,15 +45,7 @@ namespace ManagedFusion.Web.Mvc
 		{
 			if (!SupportedHttpMethods.Contains(filterContext.HttpContext.Request.HttpMethod.ToUpper()))
 			{
-				filterContext.HttpContext.Response.Clear();
-				filterContext.HttpContext.Response.StatusCode = (int)HttpStatusCode.MethodNotAllowed;
-				filterContext.HttpContext.Response.StatusDescription = "Method Not Allowed";
-				filterContext.HttpContext.Response.AppendHeader("Allow", String.Join(", ", this.SupportedHttpMethods.ToArray()));
-				filterContext.HttpContext.Response.ContentType = "text/html";
-				filterContext.HttpContext.Response.Write("<html><head><title>Method Not Allowed</title></head><h1>Method Not Allowed</h1><p>Only " + String.Join(", ", this.SupportedHttpMethods.ToArray()) + " is allowed.</p></html>");
-				filterContext.HttpContext.Response.Flush();
-				filterContext.HttpContext.Response.End();
-				filterContext.Cancel = true;
+				filterContext.Result = new MethodNotAllowedResult(SupportedHttpMethods);
 			}
 		}
 	}

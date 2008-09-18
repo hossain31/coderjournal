@@ -43,17 +43,15 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Abstractions, Version=0.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Resources\System.Web.Abstractions.dll</HintPath>
+    <Reference Include="System.Web.Abstractions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Web.Mvc, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Resources\System.Web.Mvc.dll</HintPath>
     </Reference>
-    <Reference Include="System.Web.Routing, Version=0.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Resources\System.Web.Routing.dll</HintPath>
+    <Reference Include="System.Web.Routing">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -123,13 +121,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Web\Mvc\LowercaseRoute.cs" />
+    <Compile Include="Web\Mvc\MethodNotAllowedResult.cs" />
     <Compile Include="Web\Mvc\ResponseType.cs" />
     <Compile Include="Web\Mvc\SerializedResult.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Web\Mvc\ServiceAttribute.cs" />
     <Compile Include="Web\Mvc\ServiceOnlyAttribute.cs" />
-    <Compile Include="Web\Mvc\UseActionParameterDefaultAttribute.cs" />
+    <Compile Include="Web\Mvc\UnsupportedMediaTypeResult.cs" />
     <Compile Include="Web\Mvc\XmlResult.cs">
       <SubType>Code</SubType>
     </Compile>

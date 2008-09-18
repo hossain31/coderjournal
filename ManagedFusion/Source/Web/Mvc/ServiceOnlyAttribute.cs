@@ -29,17 +29,8 @@ namespace ManagedFusion.Web.Mvc
 			if (!filterContext.RouteData.Values.ContainsKey("responseType")
 				|| (ResponseType)filterContext.RouteData.Values["responseType"] == ResponseType.Html)
 			{
-				filterContext.HttpContext.Response.Clear();
-				filterContext.HttpContext.Response.StatusCode = (int)HttpStatusCode.UnsupportedMediaType;
-				filterContext.HttpContext.Response.StatusDescription = "Unsupported Media Type";
-				filterContext.HttpContext.Response.ContentType = "text/html";
-				filterContext.HttpContext.Response.Write("<html><head><title>Unsupported Media Type</title></head><h1>Unsupported Media Type</h1><p>HTML is not allowed to be redered by this request.</p></html>");
-				filterContext.HttpContext.Response.Flush();
-				filterContext.HttpContext.Response.End();
-				filterContext.Cancel = true;
+				filterContext.Result = new UnsupportedMediaTypeResult();
 			}
-
-			base.OnActionExecuting(filterContext);
 		}
 	}
 }

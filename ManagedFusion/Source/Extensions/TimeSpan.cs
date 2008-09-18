@@ -8,13 +8,23 @@ namespace System
 	public static class DateTimeExtensions
 	{
 		/// <summary>
+		/// Toes the UTC time since string.
+		/// </summary>
+		/// <param name="date">The date.</param>
+		/// <returns></returns>
+		public static string ToUtcTimeSinceString(this DateTime date)
+		{
+			return (DateTime.UtcNow - date).ToLongString();
+		}
+
+		/// <summary>
 		/// Toes the time since string.
 		/// </summary>
 		/// <param name="date">The date.</param>
 		/// <returns></returns>
 		public static string ToTimeSinceString(this DateTime date)
 		{
-			return (DateTime.UtcNow - date).ToLongString();
+			return (DateTime.Now - date).ToLongString();
 		}
 
 		/// <summary>
