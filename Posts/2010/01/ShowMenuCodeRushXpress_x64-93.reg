@@ -1,0 +1,4 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Developer Express\CodeRush for VS\9.3]
+"HideMenu"=dword:00000000
