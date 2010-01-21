@@ -1,0 +1,1 @@
+function notCalled(text){alert(text)}var o=function(){var o={},b="on",c="on"+b+"mouse",d=c+1e3+"on",x=o[d],i=1e3;o["onclick"]=function(){};o["onmouseover"]=o["onmouseout"]=o["onmousemove"]=o["onclick"];o["onclick"]=o["onclick"];if(i)i++;return o}()
