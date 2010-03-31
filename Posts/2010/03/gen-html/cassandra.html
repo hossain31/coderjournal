@@ -1,0 +1,286 @@
+<html><head>
+<link href="style.css" rel="stylesheet" type="text/css"/>
+<title>Thrift module: cassandra</title></head><body>
+<h1>Thrift module: cassandra</h1>
+<table><tr><th>Module</th><th>Services</th><th>Data types</th><th>Constants</th></tr>
+<tr>
+<td>cassandra</td><td><a href="cassandra.html#Svc_Cassandra">Cassandra</a><br/>
+<ul>
+<li><a href="cassandra.html#Fn_Cassandra_batch_insert">batch_insert</a></li>
+<li><a href="cassandra.html#Fn_Cassandra_describe_keyspace">describe_keyspace</a></li>
+<li><a href="cassandra.html#Fn_Cassandra_get">get</a></li>
+<li><a href="cassandra.html#Fn_Cassandra_get_count">get_count</a></li>
+<li><a href="cassandra.html#Fn_Cassandra_get_key_range">get_key_range</a></li>
+<li><a href="cassandra.html#Fn_Cassandra_get_range_slice">get_range_slice</a></li>
+<li><a href="cassandra.html#Fn_Cassandra_get_slice">get_slice</a></li>
+<li><a href="cassandra.html#Fn_Cassandra_get_string_list_property">get_string_list_property</a></li>
+<li><a href="cassandra.html#Fn_Cassandra_get_string_property">get_string_property</a></li>
+<li><a href="cassandra.html#Fn_Cassandra_insert">insert</a></li>
+<li><a href="cassandra.html#Fn_Cassandra_multiget">multiget</a></li>
+<li><a href="cassandra.html#Fn_Cassandra_multiget_slice">multiget_slice</a></li>
+<li><a href="cassandra.html#Fn_Cassandra_remove">remove</a></li>
+</ul>
+</td>
+<td><a href="cassandra.html#Struct_Column">Column</a><br/>
+<a href="cassandra.html#Struct_ColumnOrSuperColumn">ColumnOrSuperColumn</a><br/>
+<a href="cassandra.html#Struct_ColumnParent">ColumnParent</a><br/>
+<a href="cassandra.html#Struct_ColumnPath">ColumnPath</a><br/>
+<a href="cassandra.html#Enum_ConsistencyLevel">ConsistencyLevel</a><br/>
+<a href="cassandra.html#Struct_InvalidRequestException">InvalidRequestException</a><br/>
+<a href="cassandra.html#Struct_KeySlice">KeySlice</a><br/>
+<a href="cassandra.html#Struct_NotFoundException">NotFoundException</a><br/>
+<a href="cassandra.html#Struct_SlicePredicate">SlicePredicate</a><br/>
+<a href="cassandra.html#Struct_SliceRange">SliceRange</a><br/>
+<a href="cassandra.html#Struct_SuperColumn">SuperColumn</a><br/>
+<a href="cassandra.html#Struct_TimedOutException">TimedOutException</a><br/>
+<a href="cassandra.html#Struct_UnavailableException">UnavailableException</a><br/>
+</td>
+<td><code><a href="cassandra.html#Const_VERSION">VERSION</a><br/>
+</code></td>
+</tr></table>
+<hr/><h2 id="Constants">Constants</h2>
+<table><tr><th>Constant</th><th>Type</th><th>Value</th></tr>
+<tr id="Const_VERSION"><td><code>VERSION</code></td><td><code><code>string</code></code></td><td><code>"0.5.1"</code></td></tr></table><hr/><h2 id="Enumerations">Enumerations</h2>
+<div class="definition"><h3 id="Enum_ConsistencyLevel">Enumeration: ConsistencyLevel</h3>
+The ConsistencyLevel is an enum that controls both read and write behavior based on <ReplicationFactor> in your
+storage-conf.xml. The different consistency levels have different meanings, depending on if you're doing a write or read
+operation. Note that if W + R > ReplicationFactor, where W is the number of nodes to block for on write, and R
+the number to block for on reads, you will have strongly consistent behavior; that is, readers will always see the most
+recent write. Of these, the most interesting is to do QUORUM reads and writes, which gives you consistency while still
+allowing availability in the face of node failures up to half of <ReplicationFactor>. Of course if latency is more
+important than consistency then you can use lower values for either or both.
+<p/>
+Write:
+     ZERO    Ensure nothing. A write happens asynchronously in background
+     ONE     Ensure that the write has been written to at least 1 node's commit log and memory table before responding to the client.
+     QUORUM  Ensure that the write has been written to <ReplicationFactor> / 2 + 1 nodes before responding to the client.
+     ALL     Ensure that the write is written to <code>&lt;ReplicationFactor&gt;</code> nodes before responding to the client.
+<p/>
+Read:
+     ZERO    Not supported, because it doesn't make sense.
+     ONE     Will return the record returned by the first node to respond. A consistency check is always done in a
+             background thread to fix any consistency issues when ConsistencyLevel.ONE is used. This means subsequent
+             calls will have correct data even if the initial read gets an older value. (This is called 'read repair'.)
+     QUORUM  Will query all storage nodes and return the record with the most recent timestamp once it has at least a
+             majority of replicas reported. Again, the remaining replicas will be checked in the background.
+     ALL     Not yet supported, but we plan to eventually.
+<br/><br/><table>
+<tr><td><code>ZERO</code></td><td><code>0</code></td></tr>
+<tr><td><code>ONE</code></td><td><code>1</code></td></tr>
+<tr><td><code>QUORUM</code></td><td><code>2</code></td></tr>
+<tr><td><code>DCQUORUM</code></td><td><code>3</code></td></tr>
+<tr><td><code>DCQUORUMSYNC</code></td><td><code>4</code></td></tr>
+<tr><td><code>ALL</code></td><td><code>5</code></td></tr>
+</table></div>
+<hr/><h2 id="Structs">Data structures</h2>
+<div class="definition"><h3 id="Struct_Column">Struct: Column</h3>
+<table><tr><th>Field</th><th>Type</th><th>Description</th><th>Required</th><th>Default value</th></tr>
+<tr><td>name</td><td><code>string</code></td><td></td><td>yes</td><td></td></tr>
+<tr><td>value</td><td><code>string</code></td><td></td><td>yes</td><td></td></tr>
+<tr><td>timestamp</td><td><code>i64</code></td><td></td><td>yes</td><td></td></tr>
+</table><br/>Basic unit of data within a ColumnFamily.
+@param name. A column name can act both as structure (a label) or as data (like value). Regardless, the name of the column
+       is used as a key to its value.
+@param value. Some data
+@param timestamp. Used to record when data was sent to be written.
+<br/></div><div class="definition"><h3 id="Struct_SuperColumn">Struct: SuperColumn</h3>
+<table><tr><th>Field</th><th>Type</th><th>Description</th><th>Required</th><th>Default value</th></tr>
+<tr><td>name</td><td><code>string</code></td><td></td><td>yes</td><td></td></tr>
+<tr><td>columns</td><td><code>list&lt;<code><a href="cassandra.html#Struct_Column">Column</a></code>&gt;</code></td><td></td><td>yes</td><td></td></tr>
+</table><br/>A named list of columns.
+@param name. see Column.name.
+@param columns. A collection of standard Columns.  The columns within a super column are defined in an adhoc manner.
+                Columns within a super column do not have to have matching structures (similarly named child columns).
+<br/></div><div class="definition"><h3 id="Struct_ColumnOrSuperColumn">Struct: ColumnOrSuperColumn</h3>
+<table><tr><th>Field</th><th>Type</th><th>Description</th><th>Required</th><th>Default value</th></tr>
+<tr><td>column</td><td><code><a href="cassandra.html#Struct_Column">Column</a></code></td><td></td><td>no</td><td></td></tr>
+<tr><td>super_column</td><td><code><a href="cassandra.html#Struct_SuperColumn">SuperColumn</a></code></td><td></td><td>no</td><td></td></tr>
+</table><br/>Methods for fetching rows/records from Cassandra will return either a single instance of ColumnOrSuperColumn or a list
+of ColumnOrSuperColumns (get_slice()). If you're looking up a SuperColumn (or list of SuperColumns) then the resulting
+instances of ColumnOrSuperColumn will have the requested SuperColumn in the attribute super_column. For queries resulting
+in Columns, those values will be in the attribute column. This change was made between 0.3 and 0.4 to standardize on
+single query methods that may return either a SuperColumn or Column.
+<p/>
+@param column. The Column returned by get() or get_slice().
+@param super_column. The SuperColumn returned by get() or get_slice().
+<br/></div><div class="definition"><h3 id="Struct_NotFoundException">Exception: NotFoundException</h3>
+<table><tr><th>Field</th><th>Type</th><th>Description</th><th>Required</th><th>Default value</th></tr>
+</table><br/>A specific column was requested that does not exist.
+<br/></div><div class="definition"><h3 id="Struct_InvalidRequestException">Exception: InvalidRequestException</h3>
+<table><tr><th>Field</th><th>Type</th><th>Description</th><th>Required</th><th>Default value</th></tr>
+<tr><td>why</td><td><code>string</code></td><td></td><td>yes</td><td></td></tr>
+</table><br/>Invalid request could mean keyspace or column family does not exist, required parameters are missing, or a parameter is malformed.
+why contains an associated error message.
+<br/></div><div class="definition"><h3 id="Struct_UnavailableException">Exception: UnavailableException</h3>
+<table><tr><th>Field</th><th>Type</th><th>Description</th><th>Required</th><th>Default value</th></tr>
+</table><br/>Not all the replicas required could be created and/or read.
+<br/></div><div class="definition"><h3 id="Struct_TimedOutException">Exception: TimedOutException</h3>
+<table><tr><th>Field</th><th>Type</th><th>Description</th><th>Required</th><th>Default value</th></tr>
+</table><br/>RPC timeout was exceeded.  either a node failed mid-operation, or load was too high, or the requested op was too large.
+<br/></div><div class="definition"><h3 id="Struct_ColumnParent">Struct: ColumnParent</h3>
+<table><tr><th>Field</th><th>Type</th><th>Description</th><th>Required</th><th>Default value</th></tr>
+<tr><td>column_family</td><td><code>string</code></td><td></td><td>yes</td><td></td></tr>
+<tr><td>super_column</td><td><code>string</code></td><td></td><td>no</td><td></td></tr>
+</table><br/>ColumnParent is used when selecting groups of columns from the same ColumnFamily. In directory structure terms, imagine
+ColumnParent as ColumnPath + '/../'.
+<p/>
+See also <a href="cassandra.html#Struct_ColumnPath">ColumnPath</a>
+<br/></div><div class="definition"><h3 id="Struct_ColumnPath">Struct: ColumnPath</h3>
+<table><tr><th>Field</th><th>Type</th><th>Description</th><th>Required</th><th>Default value</th></tr>
+<tr><td>column_family</td><td><code>string</code></td><td></td><td>yes</td><td></td></tr>
+<tr><td>super_column</td><td><code>string</code></td><td></td><td>no</td><td></td></tr>
+<tr><td>column</td><td><code>string</code></td><td></td><td>no</td><td></td></tr>
+</table><br/>The ColumnPath is the path to a single column in Cassandra. It might make sense to think of ColumnPath and
+ColumnParent in terms of a directory structure.
+<p/>
+ColumnPath is used to looking up a single column.
+<p/>
+@param column_family. The name of the CF of the column being looked up.
+@param super_column. The super column name.
+@param column. The column name.
+<br/></div><div class="definition"><h3 id="Struct_SliceRange">Struct: SliceRange</h3>
+<table><tr><th>Field</th><th>Type</th><th>Description</th><th>Required</th><th>Default value</th></tr>
+<tr><td>start</td><td><code>string</code></td><td></td><td>yes</td><td></td></tr>
+<tr><td>finish</td><td><code>string</code></td><td></td><td>yes</td><td></td></tr>
+<tr><td>reversed</td><td><code>bool</code></td><td></td><td>yes</td><td>0</td></tr>
+<tr><td>count</td><td><code>i32</code></td><td></td><td>yes</td><td>100</td></tr>
+</table><br/>A slice range is a structure that stores basic range, ordering and limit information for a query that will return
+multiple columns. It could be thought of as Cassandra's version of LIMIT and ORDER BY
+<p/>
+@param start. The column name to start the slice with. This attribute is not required, though there is no default value,
+              and can be safely set to '', i.e., an empty byte array, to start with the first column name. Otherwise, it
+              must a valid value under the rules of the Comparator defined for the given ColumnFamily.
+@param finish. The column name to stop the slice at. This attribute is not required, though there is no default value,
+               and can be safely set to an empty byte array to not stop until 'count' results are seen. Otherwise, it
+               must also be a value value to the ColumnFamily Comparator.
+@param reversed. Whether the results should be ordered in reversed order. Similar to ORDER BY blah DESC in SQL.
+@param count. How many keys to return. Similar to LIMIT 100 in SQL. May be arbitrarily large, but Thrift will
+              materialize the whole result into memory before returning it to the client, so be aware that you may
+              be better served by iterating through slices by passing the last value of one call in as the 'start'
+              of the next instead of increasing 'count' arbitrarily large.
+<br/></div><div class="definition"><h3 id="Struct_SlicePredicate">Struct: SlicePredicate</h3>
+<table><tr><th>Field</th><th>Type</th><th>Description</th><th>Required</th><th>Default value</th></tr>
+<tr><td>column_names</td><td><code>list&lt;<code>string</code>&gt;</code></td><td></td><td>no</td><td></td></tr>
+<tr><td>slice_range</td><td><code><a href="cassandra.html#Struct_SliceRange">SliceRange</a></code></td><td></td><td>no</td><td></td></tr>
+</table><br/>A SlicePredicate is similar to a mathematic predicate (see http://en.wikipedia.org/wiki/Predicate_(mathematical_logic)),
+which is described as "a property that the elements of a set have in common."
+<p/>
+SlicePredicate's in Cassandra are described with either a list of column_names or a SliceRange.  If column_names is
+specified, slice_range is ignored.
+<p/>
+@param column_name. A list of column names to retrieve. This can be used similar to Memcached's "multi-get" feature
+                    to fetch N known column names. For instance, if you know you wish to fetch columns 'Joe', 'Jack',
+                    and 'Jim' you can pass those column names as a list to fetch all three at once.
+@param slice_range. A SliceRange describing how to range, order, and/or limit the slice.
+<br/></div><div class="definition"><h3 id="Struct_KeySlice">Struct: KeySlice</h3>
+<table><tr><th>Field</th><th>Type</th><th>Description</th><th>Required</th><th>Default value</th></tr>
+<tr><td>key</td><td><code>string</code></td><td></td><td>yes</td><td></td></tr>
+<tr><td>columns</td><td><code>list&lt;<code><a href="cassandra.html#Struct_ColumnOrSuperColumn">ColumnOrSuperColumn</a></code>&gt;</code></td><td></td><td>yes</td><td></td></tr>
+</table><br/>A KeySlice is key followed by the data it maps to. A collection of KeySlice is returned by the get_range_slice operation.
+<p/>
+@param key. a row key
+@param columns. List of data represented by the key. Typically, the list is pared down to only the columns specified by
+                a SlicePredicate.
+<br/></div><hr/><h2 id="Services">Services</h2>
+<h3 id="Svc_Cassandra">Service: Cassandra</h3>
+<div class="definition"><h4 id="Fn_Cassandra_get">Function: Cassandra.get</h4>
+<pre><code><a href="cassandra.html#Struct_ColumnOrSuperColumn">ColumnOrSuperColumn</a></code> get(<code>string</code> keyspace,
+                        <code>string</code> key,
+                        <code><a href="cassandra.html#Struct_ColumnPath">ColumnPath</a></code> column_path,
+                        <code><a href="cassandra.html#Enum_ConsistencyLevel">ConsistencyLevel</a></code> consistency_level = UNKNOWN)
+    throws <code><a href="cassandra.html#Struct_InvalidRequestException">InvalidRequestException</a></code>, <code><a href="cassandra.html#Struct_NotFoundException">NotFoundException</a></code>, <code><a href="cassandra.html#Struct_UnavailableException">UnavailableException</a></code>, <code><a href="cassandra.html#Struct_TimedOutException">TimedOutException</a></code>
+</pre>Get the Column or SuperColumn at the given column_path. If no value is present, NotFoundException is thrown. (This is
+the only method that can throw an exception under non-failure conditions.)
+<br/></div><div class="definition"><h4 id="Fn_Cassandra_get_slice">Function: Cassandra.get_slice</h4>
+<pre><code>list&lt;<code><a href="cassandra.html#Struct_ColumnOrSuperColumn">ColumnOrSuperColumn</a></code>&gt;</code> get_slice(<code>string</code> keyspace,
+                                    <code>string</code> key,
+                                    <code><a href="cassandra.html#Struct_ColumnParent">ColumnParent</a></code> column_parent,
+                                    <code><a href="cassandra.html#Struct_SlicePredicate">SlicePredicate</a></code> predicate,
+                                    <code><a href="cassandra.html#Enum_ConsistencyLevel">ConsistencyLevel</a></code> consistency_level = UNKNOWN)
+    throws <code><a href="cassandra.html#Struct_InvalidRequestException">InvalidRequestException</a></code>, <code><a href="cassandra.html#Struct_UnavailableException">UnavailableException</a></code>, <code><a href="cassandra.html#Struct_TimedOutException">TimedOutException</a></code>
+</pre>Get the group of columns contained by column_parent (either a ColumnFamily name or a ColumnFamily/SuperColumn name
+pair) specified by the given SlicePredicate. If no matching values are found, an empty list is returned.
+<br/></div><div class="definition"><h4 id="Fn_Cassandra_multiget">Function: Cassandra.multiget</h4>
+<pre><code>map&lt;<code>string</code>, <code><a href="cassandra.html#Struct_ColumnOrSuperColumn">ColumnOrSuperColumn</a></code>&gt;</code> multiget(<code>string</code> keyspace,
+                                        <code>list&lt;<code>string</code>&gt;</code> keys,
+                                        <code><a href="cassandra.html#Struct_ColumnPath">ColumnPath</a></code> column_path,
+                                        <code><a href="cassandra.html#Enum_ConsistencyLevel">ConsistencyLevel</a></code> consistency_level = UNKNOWN)
+    throws <code><a href="cassandra.html#Struct_InvalidRequestException">InvalidRequestException</a></code>, <code><a href="cassandra.html#Struct_UnavailableException">UnavailableException</a></code>, <code><a href="cassandra.html#Struct_TimedOutException">TimedOutException</a></code>
+</pre>Perform a get for column_path in parallel on the given list<string> keys. The return value maps keys to the
+ColumnOrSuperColumn found. If no value corresponding to a key is present, the key will still be in the map, but both
+the column and super_column references of the ColumnOrSuperColumn object it maps to will be null.
+<br/></div><div class="definition"><h4 id="Fn_Cassandra_multiget_slice">Function: Cassandra.multiget_slice</h4>
+<pre><code>map&lt;<code>string</code>, <code>list&lt;<code><a href="cassandra.html#Struct_ColumnOrSuperColumn">ColumnOrSuperColumn</a></code>&gt;</code>&gt;</code> multiget_slice(<code>string</code> keyspace,
+                                                    <code>list&lt;<code>string</code>&gt;</code> keys,
+                                                    <code><a href="cassandra.html#Struct_ColumnParent">ColumnParent</a></code> column_parent,
+                                                    <code><a href="cassandra.html#Struct_SlicePredicate">SlicePredicate</a></code> predicate,
+                                                    <code><a href="cassandra.html#Enum_ConsistencyLevel">ConsistencyLevel</a></code> consistency_level = UNKNOWN)
+    throws <code><a href="cassandra.html#Struct_InvalidRequestException">InvalidRequestException</a></code>, <code><a href="cassandra.html#Struct_UnavailableException">UnavailableException</a></code>, <code><a href="cassandra.html#Struct_TimedOutException">TimedOutException</a></code>
+</pre>Performs a get_slice for column_parent and predicate for the given keys in parallel.
+<br/></div><div class="definition"><h4 id="Fn_Cassandra_get_count">Function: Cassandra.get_count</h4>
+<pre><code>i32</code> get_count(<code>string</code> keyspace,
+              <code>string</code> key,
+              <code><a href="cassandra.html#Struct_ColumnParent">ColumnParent</a></code> column_parent,
+              <code><a href="cassandra.html#Enum_ConsistencyLevel">ConsistencyLevel</a></code> consistency_level = UNKNOWN)
+    throws <code><a href="cassandra.html#Struct_InvalidRequestException">InvalidRequestException</a></code>, <code><a href="cassandra.html#Struct_UnavailableException">UnavailableException</a></code>, <code><a href="cassandra.html#Struct_TimedOutException">TimedOutException</a></code>
+</pre>returns the number of columns for a particular <code>key</code> and <code>ColumnFamily</code> or <code>SuperColumn</code>.
+<br/></div><div class="definition"><h4 id="Fn_Cassandra_get_key_range">Function: Cassandra.get_key_range</h4>
+<pre><code>list&lt;<code>string</code>&gt;</code> get_key_range(<code>string</code> keyspace,
+                           <code>string</code> column_family,
+                           <code>string</code> start = "",
+                           <code>string</code> finish = "",
+                           <code>i32</code> count = 100,
+                           <code><a href="cassandra.html#Enum_ConsistencyLevel">ConsistencyLevel</a></code> consistency_level = UNKNOWN)
+    throws <code><a href="cassandra.html#Struct_InvalidRequestException">InvalidRequestException</a></code>, <code><a href="cassandra.html#Struct_UnavailableException">UnavailableException</a></code>, <code><a href="cassandra.html#Struct_TimedOutException">TimedOutException</a></code>
+</pre>@deprecated; use get_range_slice instead
+<br/></div><div class="definition"><h4 id="Fn_Cassandra_get_range_slice">Function: Cassandra.get_range_slice</h4>
+<pre><code>list&lt;<code><a href="cassandra.html#Struct_KeySlice">KeySlice</a></code>&gt;</code> get_range_slice(<code>string</code> keyspace,
+                               <code><a href="cassandra.html#Struct_ColumnParent">ColumnParent</a></code> column_parent,
+                               <code><a href="cassandra.html#Struct_SlicePredicate">SlicePredicate</a></code> predicate,
+                               <code>string</code> start_key = "",
+                               <code>string</code> finish_key = "",
+                               <code>i32</code> row_count = 100,
+                               <code><a href="cassandra.html#Enum_ConsistencyLevel">ConsistencyLevel</a></code> consistency_level = UNKNOWN)
+    throws <code><a href="cassandra.html#Struct_InvalidRequestException">InvalidRequestException</a></code>, <code><a href="cassandra.html#Struct_UnavailableException">UnavailableException</a></code>, <code><a href="cassandra.html#Struct_TimedOutException">TimedOutException</a></code>
+</pre>returns a subset of columns for a range of keys.
+<br/></div><div class="definition"><h4 id="Fn_Cassandra_insert">Function: Cassandra.insert</h4>
+<pre><code>void</code> insert(<code>string</code> keyspace,
+            <code>string</code> key,
+            <code><a href="cassandra.html#Struct_ColumnPath">ColumnPath</a></code> column_path,
+            <code>string</code> value,
+            <code>i64</code> timestamp,
+            <code><a href="cassandra.html#Enum_ConsistencyLevel">ConsistencyLevel</a></code> consistency_level = UNKNOWN)
+    throws <code><a href="cassandra.html#Struct_InvalidRequestException">InvalidRequestException</a></code>, <code><a href="cassandra.html#Struct_UnavailableException">UnavailableException</a></code>, <code><a href="cassandra.html#Struct_TimedOutException">TimedOutException</a></code>
+</pre>Insert a Column consisting of (column_path.column, value, timestamp) at the given column_path.column_family and optional
+column_path.super_column. Note that column_path.column is here required, since a SuperColumn cannot directly contain binary
+values -- it can only contain sub-Columns.
+<br/></div><div class="definition"><h4 id="Fn_Cassandra_batch_insert">Function: Cassandra.batch_insert</h4>
+<pre><code>void</code> batch_insert(<code>string</code> keyspace,
+                  <code>string</code> key,
+                  <code>map&lt;<code>string</code>, <code>list&lt;<code><a href="cassandra.html#Struct_ColumnOrSuperColumn">ColumnOrSuperColumn</a></code>&gt;</code>&gt;</code> cfmap,
+                  <code><a href="cassandra.html#Enum_ConsistencyLevel">ConsistencyLevel</a></code> consistency_level = UNKNOWN)
+    throws <code><a href="cassandra.html#Struct_InvalidRequestException">InvalidRequestException</a></code>, <code><a href="cassandra.html#Struct_UnavailableException">UnavailableException</a></code>, <code><a href="cassandra.html#Struct_TimedOutException">TimedOutException</a></code>
+</pre>Insert Columns or SuperColumns across different Column Families for the same row key. batch_mutation is a
+map<string, list<ColumnOrSuperColumn>> -- a map which pairs column family names with the relevant ColumnOrSuperColumn
+objects to insert.
+<br/></div><div class="definition"><h4 id="Fn_Cassandra_remove">Function: Cassandra.remove</h4>
+<pre><code>void</code> remove(<code>string</code> keyspace,
+            <code>string</code> key,
+            <code><a href="cassandra.html#Struct_ColumnPath">ColumnPath</a></code> column_path,
+            <code>i64</code> timestamp,
+            <code><a href="cassandra.html#Enum_ConsistencyLevel">ConsistencyLevel</a></code> consistency_level = UNKNOWN)
+    throws <code><a href="cassandra.html#Struct_InvalidRequestException">InvalidRequestException</a></code>, <code><a href="cassandra.html#Struct_UnavailableException">UnavailableException</a></code>, <code><a href="cassandra.html#Struct_TimedOutException">TimedOutException</a></code>
+</pre>Remove data from the row specified by key at the granularity specified by column_path, and the given timestamp. Note
+that all the values in column_path besides column_path.column_family are truly optional: you can remove the entire
+row by just specifying the ColumnFamily, or you can remove a SuperColumn or a single Column by specifying those levels too.
+<br/></div><div class="definition"><h4 id="Fn_Cassandra_get_string_property">Function: Cassandra.get_string_property</h4>
+<pre><code>string</code> get_string_property(<code>string</code> property)
+</pre>get property whose value is of type string.
+<br/></div><div class="definition"><h4 id="Fn_Cassandra_get_string_list_property">Function: Cassandra.get_string_list_property</h4>
+<pre><code>list&lt;<code>string</code>&gt;</code> get_string_list_property(<code>string</code> property)
+</pre>get property whose value is list of strings.
+<br/></div><div class="definition"><h4 id="Fn_Cassandra_describe_keyspace">Function: Cassandra.describe_keyspace</h4>
+<pre><code>map&lt;<code>string</code>, <code>map&lt;<code>string</code>, <code>string</code>&gt;</code>&gt;</code> describe_keyspace(<code>string</code> keyspace)
+    throws <code><a href="cassandra.html#Struct_NotFoundException">NotFoundException</a></code>
+</pre>describe specified keyspace
+<br/></div></body></html>
